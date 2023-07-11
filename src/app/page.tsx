@@ -11,24 +11,36 @@ export interface IPredictionItem {
   output: string[];
   error: string;
 }
+interface FormElements extends HTMLFormControlsCollection {
+  prompt: HTMLInputElement
+}
 
+interface FormElement extends HTMLFormElement {
+ readonly elements: FormElements
+}
+const toPass = {
+  name : "Anuj Singh"
+}
 export default function Home() {
   let [prediction, setPrediction] = useState<IPredictionItem>();
   let [error, setError] = useState<any[]>([]);
 
-  const handleSubmit = async (e: {
-    target: any;
-    preventDefault: () => void;
-  }) => {
+  const handleSubmit = async (e : React.FormEvent<FormElement>) => {
+    console.log(e.currentTarget.elements.prompt.value);
+    console.log("submit");
     e.preventDefault();
-    const prompt = e.target.prompt.value;
-    const res = await fetch("/api/predictions", {
+    const prompt = e.currentTarget.elements.prompt.value;
+
+    const res = await fetch("/api/predictions/stability", {
       method: "POST",
-      body: JSON.stringify({ prompt }),
       headers: {
         "Content-Type": "application/json",
       },
-    });
+      body: JSON.stringify({
+        prompt: prompt,
+      }),
+      });
+
     let prediction = await res.json();
     if (res.status !== 201) {
       setError(prediction.detail);
@@ -59,10 +71,7 @@ export default function Home() {
       </header>
       <div>
         {/* <img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="W3Schools.com"/> */}
-        <div
-          className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-          role="status"
-        >
+        <div>
           {error && <div>{error}</div>}
 
           {prediction && (
@@ -85,6 +94,9 @@ export default function Home() {
               </span>
             </>
           )}
+          <p>Status</p>
+          {/* <div           className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          role="status"></div> */}
         </div>
       </div>
       <div>

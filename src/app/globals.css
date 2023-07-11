@@ -34,3 +34,9 @@ form input {
 form button {
   background-color: black;
 }
+
+.image-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
