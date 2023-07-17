@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
+
 const sleep = (ms: number | undefined) => new Promise((r) => setTimeout(r, ms));
 
 export interface IPredictionItem {
@@ -78,11 +79,9 @@ export default function Home() {
             <>
               {prediction.output && (
                 <div className="image-wrapper mt-5">
-                  <Image
-                    fill
+                  <img
                     src={prediction.output[prediction.output.length - 1]}
                     alt="output"
-                    sizes="100vw"
                   />
                 </div>
               )}

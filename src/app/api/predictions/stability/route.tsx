@@ -1,18 +1,16 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import 'server-only'
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
 
-console.log("dada", process.env.REPLICATE_API_TOKEN);
-
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN!,
+  auth: process.env.NEXT_PUBLIC_REPLICATE_API_TOKEN!,
 });
 
 
 export async function POST(req: Request) {
   const res = await req.json()
 
-  if (!process.env.REPLICATE_API_TOKEN) {
+  if (!process.env.NEXT_PUBLIC_REPLICATE_API_TOKEN) {
     throw new Error(
       "The REPLICATE_API_TOKEN environment variable is not set. See README.md for instructions on how to set it."
     );
