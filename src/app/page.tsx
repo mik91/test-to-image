@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useState } from "react";
 
-
 const sleep = (ms: number | undefined) => new Promise((r) => setTimeout(r, ms));
 
 export interface IPredictionItem {
@@ -13,34 +12,24 @@ export interface IPredictionItem {
   error: string;
 }
 interface FormElements extends HTMLFormControlsCollection {
-  prompt: HTMLInputElement
+  prompt: HTMLInputElement;
 }
 
 interface FormElement extends HTMLFormElement {
- readonly elements: FormElements
+  readonly elements: FormElements;
 }
-const toPass = {
-  name : "Anuj Singh"
-}
+
 export default function Home() {
   let [prediction, setPrediction] = useState<IPredictionItem>();
   let [error, setError] = useState<any[]>([]);
 
-  const handleSubmit = async (e : React.FormEvent<FormElement>) => {
+  async function handleSubmit(e: React.FormEvent<FormElement>) {
     console.log(e.currentTarget.elements.prompt.value);
     console.log("submit");
     e.preventDefault();
     const prompt = e.currentTarget.elements.prompt.value;
 
-    const res = await fetch("/api/predictions/stability", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-      }),
-      });
+    const res = await getPrompt(prompt);
 
     let prediction = await res.json();
     if (res.status !== 201) {
@@ -49,10 +38,8 @@ export default function Home() {
     }
     setPrediction(prediction);
 
-    while (
-      prediction.status !== "succeeded" &&
-      prediction.status !== "failed"
-    ) {
+    while (prediction.status !== "succeeded" &&
+      prediction.status !== "failed") {
       await sleep(1000);
       const response = await fetch("/api/predictions/" + prediction.id);
       prediction = await response.json();
@@ -63,7 +50,7 @@ export default function Home() {
       console.log({ prediction });
       setPrediction(prediction);
     }
-  };
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -99,10 +86,7 @@ export default function Home() {
         </div>
       </div>
       <div>
-        <form
-          className="flex gap-2 flex-col"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex gap-2 flex-col" onSubmit={handleSubmit}>
           <label htmlFor="Prompt">
             Enter a prompt to transform to an Image:
           </label>
@@ -130,4 +114,5 @@ export default function Home() {
       </div>
     </main>
   );
+
 }
