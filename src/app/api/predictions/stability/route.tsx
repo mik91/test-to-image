@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   console.log("body", res.prompt);
 
   const prediction = await replicate.predictions.create({
-    version: "db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
+    version: "ea1addaab376f4dc227f5368bbd8eff901820fd1cc14ed8cad63b29249e9d463",
     input: { prompt: res.prompt },
   });
 
