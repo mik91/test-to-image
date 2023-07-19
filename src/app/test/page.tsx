@@ -1,37 +1,83 @@
 // // Add text to image using canvas
 // //https://stackoverflow.com/questions/40444632/add-text-to-image-using-typescript#:~:text=var%20canvas%20%3D%20document.getElementById%20%28%27myCanvas%27%29%20as%20HTMLCanvasElement%3B%20var,%28%22My%20TEXT%21%22%2C%20100%2C%20200%29%3B%20%7D%3B%20imageObj.src%20%3D%20%27http%3A%2F%2Fwww.html5canvastutorials.com%2Fdemos%2Fassets%2Fdarth-vader.jpg%27%3B
 "use client";
-import React, { useRef, useEffect  } from 'react'
+import React, { useRef, useEffect } from "react";
 
-const Canvas = (props: React.JSX.IntrinsicAttributes & React.ClassAttributes<HTMLCanvasElement> & React.CanvasHTMLAttributes<HTMLCanvasElement>) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
+const Canvas = (
+  props: React.JSX.IntrinsicAttributes &
+    React.ClassAttributes<HTMLCanvasElement> &
+    React.CanvasHTMLAttributes<HTMLCanvasElement>
+) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas?.getContext('2d')
-        const imageObj = new Image();
-        imageObj.onload = function () {
-            if (context && canvas){
-                context.drawImage(imageObj, 0, 0);
-                context.font = "30px Arial";
-                context.fillStyle = "white";
-                // add text at bottom of image
-                const fontSize = 30;
-                context.fillStyle = 'red';
-                context.textAlign = 'center';
-                const textX = canvas.width / 2;
-                const textY = canvas.height - fontSize;
-                context.fillText("Hello World", textX, textY);                
-            }
-        };
-        imageObj.src = "https://replicate.delivery/pbxt/REYu70RXyK6GHFp8h6LuBTLJZnCUX01VyqAM9ZefPwfkzthiA/out-0.png";
-        if (canvas) {
-            canvas.width = imageObj.width;
-            canvas.height = imageObj.height;
-        }
-    }, [])
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    const imageObj = new Image();
+    imageObj.crossOrigin = "Anonymous";
+    imageObj.onload = function () {
+      if (context && canvas) {
+        context.drawImage(imageObj, 0, 0);
+        // Get the image and analyze the background color
+        const width =
+          imageObj.width || imageObj.naturalWidth || imageObj.offsetWidth;
+        const height =
+          imageObj.height || imageObj.naturalHeight || imageObj.offsetHeight;
+        console.log({ width, height });
+        // Step 1: Get the image data and analyze the background color
+        const luminance = getLuminance(context, width, height);
 
-    return <canvas ref={canvasRef} {...props} width="500" height="500" />
+        context.font = "30px Arial";
+        context.fillStyle = "white";
+        const textColor = luminance > 0.5 ? "black" : "white";
+        // add text at bottom of image
+        const fontSize = 30;
+        context.fillStyle = textColor;
+        context.textAlign = "center";
+        const textX = canvas.width / 2;
+        const textY = canvas.height - fontSize;
+        context.fillText(
+          "Knowing your own darkness is the best method for dealing with the darkness of other people",
+          textX,
+          textY
+        );
+      }
+    };
+    imageObj.src = "/img.png";
+    if (canvas) {
+      canvas.width = imageObj.width;
+      canvas.height = imageObj.height;
+    }
+  }, []);
+
+  return <canvas ref={canvasRef} />;
+};
+
+export default Canvas;
+
+function getLuminance(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number
+) {
+  const imageData = context.getImageData(0, 0, width, height);
+  let totalRed = 0;
+  let totalGreen = 0;
+  let totalBlue = 0;
+
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    totalRed += imageData.data[i];
+    totalGreen += imageData.data[i + 1];
+    totalBlue += imageData.data[i + 2];
+  }
+
+  const averageRed = totalRed / (imageData.data.length / 4);
+  const averageGreen = totalGreen / (imageData.data.length / 4);
+  const averageBlue = totalBlue / (imageData.data.length / 4);
+  console.log({ averageRed, averageGreen, averageBlue });
+
+  // Step 2: Calculate the luminance to determine the optimal text color
+  const luminance =
+    (0.299 * averageRed + 0.587 * averageGreen + 0.114 * averageBlue) / 255;
+  return luminance;
 }
-
-export default Canvas
