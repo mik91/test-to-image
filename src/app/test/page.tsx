@@ -1,5 +1,5 @@
-// // Add text to image using canvas
-// //https://stackoverflow.com/questions/40444632/add-text-to-image-using-typescript#:~:text=var%20canvas%20%3D%20document.getElementById%20%28%27myCanvas%27%29%20as%20HTMLCanvasElement%3B%20var,%28%22My%20TEXT%21%22%2C%20100%2C%20200%29%3B%20%7D%3B%20imageObj.src%20%3D%20%27http%3A%2F%2Fwww.html5canvastutorials.com%2Fdemos%2Fassets%2Fdarth-vader.jpg%27%3B
+// Add text to image using canvas
+//https://stackoverflow.com/questions/40444632/add-text-to-image-using-typescript#:~:text=var%20canvas%20%3D%20document.getElementById%20%28%27myCanvas%27%29%20as%20HTMLCanvasElement%3B%20var,%28%22My%20TEXT%21%22%2C%20100%2C%20200%29%3B%20%7D%3B%20imageObj.src%20%3D%20%27http%3A%2F%2Fwww.html5canvastutorials.com%2Fdemos%2Fassets%2Fdarth-vader.jpg%27%3B
 "use client";
 import React, { useRef, useEffect } from "react";
 
@@ -52,8 +52,7 @@ function creationOfImage(
     const textColor = luminance > 0.5 ? "black" : "white";
 
     // Text
-    const text =
-      "Knowing your own darkness";
+    const text = "Knowing your own darkness";
     let fontSize = defineTextSize(context, canvas, text);
 
     // add text at bottom of image

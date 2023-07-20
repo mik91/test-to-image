@@ -27,7 +27,7 @@ body {
     )
     rgb(var(--background-rgb));
 }
-form input {
+form input, form textarea {
   color: black;
 }
 

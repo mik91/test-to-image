@@ -92,12 +92,17 @@ export default function Home() {
           <label htmlFor="Prompt">
             Enter a prompt to transform to an Image:
           </label>
-          <input
+          {/* <input
             type="text"
             name="prompt"
             id="prompt"
             placeholder="Enter a prompt..."
-          />
+          /> */}
+          <textarea
+            name="prompt"
+            id="prompt"
+            placeholder="Enter a prompt..."
+          ></textarea>
           <div className="flex gap-1 justify-end">
             <button
               type="reset"
