@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { getPrompt } from "../lib/GetPrompt";
 
 const sleep = (ms: number | undefined) => new Promise((r) => setTimeout(r, ms));
 
@@ -50,6 +51,7 @@ export default function Home() {
       console.log({ prediction });
       setPrediction(prediction);
     }
+    console.log(prediction.output[prediction.output.length - 1])
   }
 
   return (
