@@ -15,35 +15,12 @@ const Canvas = (
     const context = canvas?.getContext("2d");
     const imageObj = new Image();
     imageObj.crossOrigin = "Anonymous";
-    imageObj.onload = function () {
-      if (context && canvas) {
-        context.drawImage(imageObj, 0, 0);
-        // Get the image and analyze the background color
-        const width =
-          imageObj.width || imageObj.naturalWidth || imageObj.offsetWidth;
-        const height =
-          imageObj.height || imageObj.naturalHeight || imageObj.offsetHeight;
-        console.log({ width, height });
-        // Step 1: Get the image data and analyze the background color
-        const luminance = getLuminance(context, width, height);
 
-        context.font = "30px Arial";
-        context.fillStyle = "white";
-        const textColor = luminance > 0.5 ? "black" : "white";
-        // add text at bottom of image
-        const fontSize = 30;
-        context.fillStyle = textColor;
-        context.textAlign = "center";
-        const textX = canvas.width / 2;
-        const textY = canvas.height - fontSize;
-        context.fillText(
-          "Knowing your own darkness is the best method for dealing with the darkness of other people",
-          textX,
-          textY
-        );
-      }
+    imageObj.onload = function () {
+      creationOfImage(context, canvas, imageObj);
     };
-    imageObj.src = "/img.png";
+    imageObj.src =
+      "https://replicate.delivery/pbxt/ct83QsMwsIoIGlt34fzEzKcBNEKtNvAdaFU4ipQKfK4UfkjiA/out-0.png";
     if (canvas) {
       canvas.width = imageObj.width;
       canvas.height = imageObj.height;
@@ -54,6 +31,57 @@ const Canvas = (
 };
 
 export default Canvas;
+
+function creationOfImage(
+  context: CanvasRenderingContext2D | null | undefined,
+  canvas: HTMLCanvasElement | null,
+  imageObj: HTMLImageElement
+) {
+  if (context && canvas) {
+    context.drawImage(imageObj, 0, 0);
+    // Get the image and analyze the background color
+    const width =
+      imageObj.width || imageObj.naturalWidth || imageObj.offsetWidth;
+    const height =
+      imageObj.height || imageObj.naturalHeight || imageObj.offsetHeight;
+    console.log({ width, height });
+    // Step 1: Get the image data and analyze the background color
+    const luminance = getLuminance(context, width, height);
+
+    // Check if the background is dark or light
+    const textColor = luminance > 0.5 ? "black" : "white";
+
+    // Text
+    const text =
+      "Knowing your own darkness";
+    let fontSize = defineTextSize(context, canvas, text);
+
+    // add text at bottom of image
+    context.font = fontSize + "px Arial";
+    context.fillStyle = textColor;
+    context.textAlign = "center";
+    const textX = canvas.width / 2;
+    const textY = canvas.height - fontSize;
+    context.fillText(text, textX, textY);
+  }
+}
+
+function defineTextSize(
+  context: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  text: string
+) {
+  const maxFontSize = 30;
+  const minFontSize = 10;
+  let fontSize = maxFontSize;
+  let textWidth;
+  do {
+    context.font = fontSize + "px Arial";
+    textWidth = context.measureText(text).width;
+    fontSize--;
+  } while (textWidth > canvas.width && fontSize > minFontSize);
+  return fontSize;
+}
 
 function getLuminance(
   context: CanvasRenderingContext2D,
